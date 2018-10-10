@@ -32,4 +32,27 @@
             myRedisTemplate.opsForValue().set("emp",employee);
             Employee emp = myRedisTemplate.opsForValue().get("emp");
             System.out.println(emp);
-        
+            
+### Jackson2JsonEncoder，Jackson2JsonDecoder对象和json字符串互转
+
+    Employee employee = employeeService.getById(1);
+    Jackson2JsonEncoder jsonEncoder = new  Jackson2JsonEncoder();
+    ObjectMapper objectMapper = jsonEncoder.getObjectMapper();
+
+    //序列化的时候序列对象的所有属性
+    objectMapper.setSerializationInclusion(JsonInclude.Include.ALWAYS);
+    //取消时间的转化格式,默认是时间戳,可以取消,同时需要设置要表现的时间格式
+    objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+    objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+
+    String s = objectMapper.writeValueAsString(employee);
+    System.out.println(s);
+    System.out.println("================");
+
+    Jackson2JsonDecoder decoder = new  Jackson2JsonDecoder();
+    ObjectMapper objectMapper1 = decoder.getObjectMapper();
+    Employee employee1 = objectMapper1.readValue(s, Employee.class);
+    System.out.println(employee1);
+       
+       
+    淘淘商城项目中有直接封装好的JsonUtils 
